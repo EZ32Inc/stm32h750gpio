@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "ESP32JTAG Debug",
+      "cwd": "${workspaceFolder}",
+      "executable": "build/stm32h750gpio.elf",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "external",
+      //"gdbTarget": "192.168.2.42:4242",
+      "gdbTarget": "192.168.4.1:4242",
+      "device": "STM32F750",  
+      //"showDevDebugOutput": "raw",
+      "interface": "swd",
+      "runToEntryPoint": "main",
+      "preLaunchTask": "build",
+      //"preLaunchCommands": [
+       "overrideLaunchCommands":[
+        "file build/stm32h750gpio.elf",
+        "enable breakpoint",
+        "monitor a",
+        "attach 1",
+        "load"
+      ]
+
+    }
+  ]
+}
+
