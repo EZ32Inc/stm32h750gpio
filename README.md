@@ -9,9 +9,9 @@ This project demonstrates a minimal STM32H750 GPIO LED toggle example built usin
 
 ---
 
-# Fastest Professional Path (Step 1 → Step 7)
+# How to use this project
 
-## Step 1 — Install ARM GCC Toolchain (Linux / Ubuntu)
+## Step 1 — Install ARM GCC Toolchain (Linux / Ubuntu) if you have not
 
 ```bash
 sudo apt update
@@ -24,102 +24,12 @@ Verify installation:
 arm-none-eabi-gcc --version
 ```
 
----
+## Step 2 — Install VScode then install Cortex-debug
 
-## Step 2 — Install STM32CubeMX
+Google or ask AI, it is easy and free!
 
-Download STM32CubeMX from STMicroelectronics official website and install it.
 
-STM32CubeMX is only used to generate project skeleton code.  
-No IDE is required for development.
-
----
-
-## Step 3 — Create STM32H750 Project
-
-1. Open STM32CubeMX
-2. Click **New Project**
-3. Select your exact STM32H750 part number
-4. Go to **Pinout & Configuration**
-5. Configure one GPIO pin as:
-
-   - Mode: Output Push-Pull  
-   - Example: `PA5` (if LED is connected there)
-
----
-
-## Step 4 — Configure Project Toolchain
-
-In STM32CubeMX:
-
-1. Go to **Project Manager**
-2. Set **Toolchain / IDE** to:
-
-```
-Makefile
-```
-
-3. Generate Code
-
-You will now have a project structure similar to:
-
-```
-Core/
-Drivers/
-startup_stm32h750xx.s
-STM32H750xx_FLASH.ld
-Makefile
-```
-
----
-
-## Step 5 — Add LED Toggle Code
-
-Open:
-
-```
-Core/Src/main.c
-```
-
-Inside the main loop:
-
-```c
-while (1)
-{
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-    HAL_Delay(500);
-}
-```
-
-Adjust GPIO port and pin according to your hardware.
-
----
-
-## Step 6 — Build the Project
-
-From project root directory:
-
-```bash
-make
-```
-
-Build outputs will be generated in:
-
-```
-build/project.elf
-build/project.bin
-build/project.hex
-```
-
-To clean:
-
-```bash
-make clean
-```
-
----
-
-## Step 7 — flash and debug the MCU 
+## Step 3 — flash and debug the MCU 
 
 ### Using ESP32JTAG with VSCode+Cortex-debug
 
@@ -159,9 +69,107 @@ We already have inlcuded a setup file in .vscode/lauch.json, you may need to cha
   ]
 }
 ```
-Then press F% to start to flash and debugging!
+Then press F5 to start to flash and debugging!
 
 ---
+
+# How to create a project like this (Step 1 → Step 5)
+
+## Step 1 — Install STM32CubeMX
+
+Download STM32CubeMX from STMicroelectronics official website and install it.
+
+STM32CubeMX is only used to generate project skeleton code.  
+No IDE is required for development.
+
+---
+
+## Step 2 — Create STM32H750 Project
+
+###You can create a project for other STM MCUs the same way.
+
+1. Open STM32CubeMX
+2. Click **New Project**
+3. Select your exact STM32H750 part number
+4. Go to **Pinout & Configuration**
+5. Configure one GPIO pin as:
+
+   - Mode: Output Push-Pull  
+   - Example: `PA5` (if LED is connected there)
+
+---
+
+## Step 3 — Configure Project Toolchain
+
+In STM32CubeMX:
+
+1. Go to **Project Manager**
+2. Set **Toolchain / IDE** to:
+
+```
+Makefile
+```
+
+3. Generate Code
+
+You will now have a project structure similar to:
+
+```
+Core/
+Drivers/
+startup_stm32h750xx.s
+STM32H750xx_FLASH.ld
+Makefile
+```
+
+---
+
+## Step 4 — Add LED Toggle Code
+
+Open:
+
+```
+Core/Src/main.c
+```
+
+Inside the main loop:
+
+```c
+while (1)
+{
+    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+    HAL_Delay(500);
+}
+```
+
+Adjust GPIO port and pin according to your hardware.
+
+---
+
+## Step 5 — Build the Project
+
+From project root directory:
+
+```bash
+make
+```
+
+Build outputs will be generated in:
+
+```
+build/project.elf
+build/project.bin
+build/project.hex
+```
+
+To clean:
+
+```bash
+make clean
+```
+
+---
+
 
 # What This Demo Does
 
