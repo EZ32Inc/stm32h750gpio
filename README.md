@@ -1,54 +1,187 @@
-# stm32h750gpio
-flowchart TD
+# STM32H750 GPIO LED Toggle Demo for use with ESP32JTAG and VSCode+Cortex-debug 
 
-    A[Start: STM32H750 GPIO LED Demo Setup] --> B[Step 1: Install ARM GCC Toolchain]
+This project demonstrates a minimal STM32H750 GPIO LED toggle example built using:
 
-    B --> B1[Run:
-    sudo apt install gcc-arm-none-eabi make]
+- arm-none-eabi-gcc
+- Makefile
+- STM32CubeMX (code generation only)
+- ESP32JTAG and VSCode+Cortex-debug for debugging 
 
-    B1 --> B2[Verify:
-    arm-none-eabi-gcc --version]
+---
 
-    B2 --> C[Step 2: Install STM32CubeMX]
+# Fastest Professional Path (Step 1 → Step 7)
 
-    C --> C1[Download from STMicroelectronics website]
-    C1 --> C2[Install and launch STM32CubeMX]
+## Step 1 — Install ARM GCC Toolchain (Linux / Ubuntu)
 
-    C2 --> D[Step 3: Create STM32H750 Project]
+```bash
+sudo apt update
+sudo apt install gcc-arm-none-eabi make
+```
 
-    D --> D1[New Project]
-    D1 --> D2[Select STM32H750 MCU (exact package)]
-    D2 --> D3[Pinout & Configuration]
-    D3 --> D4[Enable one GPIO as Output Push-Pull (e.g., PA5)]
+Verify installation:
 
-    D4 --> E[Step 4: Configure Project Settings]
+```bash
+arm-none-eabi-gcc --version
+```
 
-    E --> E1[Project Manager → Toolchain: Makefile]
-    E1 --> E2[Generate Code]
+---
 
-    E2 --> E3[Generated Structure:
-    Core/
-    Drivers/
-    Makefile
-    startup_stm32h750xx.s
-    linker_script.ld]
+## Step 2 — Install STM32CubeMX
 
-    E3 --> F[Step 5: Add LED Toggle Code]
+Download STM32CubeMX from STMicroelectronics official website and install it.
 
-    F --> F1[Open: Core/Src/main.c]
-    F1 --> F2[Inside while(1):
-    
+STM32CubeMX is only used to generate project skeleton code.  
+No IDE is required for development.
+
+---
+
+## Step 3 — Create STM32H750 Project
+
+1. Open STM32CubeMX
+2. Click **New Project**
+3. Select your exact STM32H750 part number
+4. Go to **Pinout & Configuration**
+5. Configure one GPIO pin as:
+
+   - Mode: Output Push-Pull  
+   - Example: `PA5` (if LED is connected there)
+
+---
+
+## Step 4 — Configure Project Toolchain
+
+In STM32CubeMX:
+
+1. Go to **Project Manager**
+2. Set **Toolchain / IDE** to:
+
+```
+Makefile
+```
+
+3. Generate Code
+
+You will now have a project structure similar to:
+
+```
+Core/
+Drivers/
+startup_stm32h750xx.s
+STM32H750xx_FLASH.ld
+Makefile
+```
+
+---
+
+## Step 5 — Add LED Toggle Code
+
+Open:
+
+```
+Core/Src/main.c
+```
+
+Inside the main loop:
+
+```c
+while (1)
+{
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-    HAL_Delay(500);]
+    HAL_Delay(500);
+}
+```
 
-    F2 --> G[Step 6: Build Project]
+Adjust GPIO port and pin according to your hardware.
 
-    G --> G1[Run:
-    make]
+---
 
-    G --> G2[Output:
-    build/project.elf
-    build/project.bin]
+## Step 6 — Build the Project
 
-    G2 --> H[Done]
+From project root directory:
 
+```bash
+make
+```
+
+Build outputs will be generated in:
+
+```
+build/project.elf
+build/project.bin
+build/project.hex
+```
+
+To clean:
+
+```bash
+make clean
+```
+
+---
+
+## Step 7 — flash and debug the MCU 
+
+### Using ESP32JTAG with VSCode+Cortex-debug
+
+Install VSCode and then the Cortex-debug extention:
+
+Then run VSCode and open this folder.
+We already have inlcuded a setup file in .vscode/lauch.json, you may need to change the IP address of ESP32JTAG if it is not 192.168.4.1
+```
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "ESP32JTAG Debug",
+      "cwd": "${workspaceFolder}",
+      "executable": "build/stm32h750gpio.elf",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "external",
+      //"gdbTarget": "192.168.2.42:4242",
+      "gdbTarget": "192.168.4.1:4242",
+      "device": "STM32F750",
+      //"showDevDebugOutput": "raw",
+      "interface": "swd",
+      "runToEntryPoint": "main",
+      "preLaunchTask": "build",
+      //"preLaunchCommands": [
+       "overrideLaunchCommands":[
+        "file build/stm32h750gpio.elf",
+        "enable breakpoint",
+        "monitor a",
+        "attach 1",
+        "load"
+      ]
+
+    }
+  ]
+}
+```
+Then press F% to start to flash and debugging!
+
+---
+
+# What This Demo Does
+
+- Initializes system clock
+- Configures one GPIO as output
+- Toggles LED every 500ms
+- Demonstrates GCC + Makefile workflow
+- Using ESP32JTAG with VSCode+Cortex-debug to flash and debug STM32H750 target
+
+---
+
+# Recommended Extensions
+
+- Replace HAL delay with SysTick-based delay
+- Add UART printf
+- Add button interrupt
+- Add FreeRTOS
+- Convert to bare-metal (no HAL)
+
+---
+
+Author: Andrew Li  
+License: MIT
